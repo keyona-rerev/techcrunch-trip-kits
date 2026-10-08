@@ -1334,9 +1334,7 @@ function hotelAddr(){ return noteVal("sf_hotel_addr").trim(); }
 function legFor(ev){
   var id = ev.id, w = String(ev.where || "");
   if (/moscone/i.test(w)) return {type:"arrive", from:hotelAddr(), to:MOSCONE, needHotel:true, label:"hotel to Moscone West"};
-  if (id === "t13") return {type:"info", from:LAX_XY, to:COURTYARD, label:"LAX to the hotel (the hotel shuttle is free)"};
-  if (id === "t14") return {type:"info", from:COURTYARD, to:LAX_XY, label:"hotel to LAX (the hotel shuttle is free)"};
-  if (id === "t11" || id === "t17") return {type:"info", from:hotelAddr(), to:SFO_XY, needHotel:true, label:"hotel to SFO"};
+  if (id === "t12") return {type:"info", from:hotelAddr(), to:SFO_XY, needHotel:true, label:"hotel to SFO"};
   return null;
 }
 function rtKey(f, t, m){ return m + "|" + f + "|" + t; }
@@ -1443,14 +1441,14 @@ function updatePvBanner(){
 
 /* ---------- home board ---------- */
 var STAGES = [
-  {e:"📝", d:"Oct 7-9",  t:"Prep",            end:"2026-10-10T00:00:00-05:00", tab:"pack", info:"Do the tasks in the Pack tab. Book the hotel and rides. Find the rehearsal time."},
+  {e:"📝", d:"Oct 7-9",  t:"Prep",            end:"2026-10-10T00:00:00-05:00", tab:"pack", info:"Do the tasks in the Pack tab. Book your rides. Find the rehearsal time."},
   {e:"🧳", d:"Oct 10",   t:"Pack + check in", end:"2026-10-11T03:00:00-05:00", tab:"pack", info:"Check in for Southwest at 5:00 AM CDT. Pack the bags tonight. Charge all devices."},
-  {e:"✈️", d:"Oct 11",   t:"Fly to SF",       end:"2026-10-12T00:00:00-07:00", tab:"plan", info:"Leave home 3:00 AM. BHM to DEN to SFO. Land 10:15 AM PDT. Go to the hotel."},
+  {e:"✈️", d:"Oct 11",   t:"Fly to SF",       end:"2026-10-12T00:00:00-07:00", tab:"plan", info:"Leave home about 3:15 AM. Be at BHM by 3:45 AM. Flight 5:00 AM, BHM to DEN to SFO. Land 10:15 AM PDT. Go to your friend's place in Palo Alto."},
   {e:"🎤", d:"Oct 12",   t:"Rehearsal + booth", end:"2026-10-13T00:00:00-07:00", tab:"plan", info:"Top 20 technical rehearsal at Moscone West. Bring all demo gear. Set up the booth."},
   {e:"🚀", d:"Oct 13",   t:"Disrupt Day 1 + pitch", end:"2026-10-14T00:00:00-07:00", tab:"plan", info:"Show the badge QR. Check the pitch schedule. Pitch is 6 minutes with a live demo. Evening: Women in Tech(Crunch) Reception, 5 to 7 PM, Harborview Restaurant (offsite, hosted by Mastercard, RSVP needed). Check the venue address in your invite."},
-  {e:"🌆", d:"Oct 14",   t:"Day 2 + fly to LA", end:"2026-10-15T00:00:00-07:00", tab:"plan", info:"Leave for SFO at 1:30 PM. Flight 4:07 PM. Sleep at Courtyard LAX."},
-  {e:"🌙", d:"Oct 15",   t:"Back to SF + red-eye", end:"2026-10-16T00:00:00-07:00", tab:"plan", info:"LAX to SFO 7:17 AM. Day 3 and pack the booth. Red-eye leaves SFO 11:36 PM."},
-  {e:"🏁", d:"Oct 16",   t:"Land: ORD to DCA", end:"2026-10-16T10:06:00-04:00", tab:"plan", info:"Land ORD 5:59 AM CDT. Fly ORD to DCA. Land 10:06 AM EDT."},
+  {e:"🌆", d:"Oct 14",   t:"Disrupt Day 2", end:"2026-10-15T00:00:00-07:00", tab:"plan", info:"Disrupt Day 2 at Moscone West. Sleep at Fun Social Hostel 1."},
+  {e:"🌙", d:"Oct 15",   t:"Day 3 + red-eye home", end:"2026-10-16T00:00:00-07:00", tab:"plan", info:"Check out of the hostel by 11 AM. Day 3 and pack the booth. Leave for SFO about 8:30 PM. Flight WN 3782 leaves SFO 11:40 PM."},
+  {e:"🏁", d:"Oct 16",   t:"Home to Birmingham", end:"2026-10-16T13:20:00-05:00", tab:"plan", info:"SFO to MDW (lands 5:50 AM CDT), MDW to BNA, BNA to BHM. Land BHM 1:20 PM CDT."},
   {e:"🎉", d:"Done",     t:"Trip complete",   end:"2999-01-01T00:00:00Z", tab:"now", info:"Good work. Rest. Send follow-up notes."}
 ];
 var selStage = null;
@@ -1465,7 +1463,7 @@ var MY_STAYS = [
   {dates:"Oct 11 and 12", title:"Friend's home (nights 1 and 2)", lines:["814B Quarry Road. The home is in a four-unit building. It is the bottom right apartment when you face it from the street.","The host will send entry details. Add them here when they arrive."], map:"https://maps.app.goo.gl/R93FukKC8j1bUVsP8", mapLabel:"Map"},
   {dates:"Morning of Oct 13", title:"Leave the friend's home", lines:["Leave with your full suitcase.","Go to the hostel. Check-in is after 4 PM, so you may have to wait."]},
   {dates:"Oct 13 and 14", title:"Fun Social Hostel 1 (nights 3 and 4)", lines:["494 Broadway St, San Francisco, CA 94133.","Check in after 4 PM on Oct 13. Check out by 11 AM on Oct 15.","Airbnb confirmation HMKPPFNTMY. Self check-in with the building staff. Expect stairs.","Free cancel before 4 PM on Oct 12."], map:"https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("494 Broadway St, San Francisco, CA 94133"), mapLabel:"Map"},
-  {dates:"Oct 15", title:"Check out and go to Moscone", lines:["Check out by 11 AM. You said the hostel keeps your suitcase after checkout. This is not checked yet. Ask the host to confirm.","Backup: the Moscone coat check in the first-floor lobby holds luggage.","Your flight leaves late on Oct 15 (about 11 PM). Check the time on your ticket."]}
+  {dates:"Oct 15", title:"Check out and go to Moscone", lines:["Check out by 11 AM. You said the hostel keeps your suitcase after checkout. This is not checked yet. Ask the host to confirm.","Backup: the Moscone coat check in the first-floor lobby holds luggage.","Your flight WN 3782 leaves SFO at 11:40 PM on Oct 15. Confirmation C3LOZD."]}
 ];
 function stayHtml(){
   var h = '<div class="info" style="margin-top:12px"><div class="lbl">Where you sleep</div><h3>Your stay</h3>';
@@ -1711,12 +1709,8 @@ var OS_COM = {
   "2026-10-13":[
     {id:"pitch", t:"", mark:true, kind:"Prismm", title:"Prismm pitch: 6 minutes with a live demo", note:"The pitch time is not known yet. Set it here. Decide who runs the demo."}
   ],
-  "2026-10-14":[
-    {id:"leave14", t:"13:30", away:"after", kind:"Travel", title:"Leave Moscone for the airport", note:"The flight SFO to LAX leaves at 4:07 PM. 1:30 PM is an estimate. The night is at Courtyard LAX."}
-  ],
   "2026-10-15":[
-    {id:"back15", t:"10:00", away:"before", kind:"Travel", title:"Back at Moscone from LAX", note:"The flight LAX to SFO leaves at 7:17 AM. 10:00 AM is an estimate."},
-    {id:"leave15", t:"", kind:"Travel", title:"Leave Moscone for the red-eye", note:"The flight SFO to ORD leaves at 11:36 PM. Set the time you leave the booth."}
+    {id:"leave15", t:"20:30", kind:"Travel", title:"Leave Moscone for the airport", note:"Flight WN 3782 leaves SFO at 11:40 PM. 8:30 PM is an estimate. Set the time you leave the booth."}
   ]
 };
 var OS_URL = "https://techcrunch.com/events/tc-disrupt-2026/agenda/";
