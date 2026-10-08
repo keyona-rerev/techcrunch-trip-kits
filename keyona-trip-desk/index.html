@@ -512,7 +512,7 @@ function saveQueue(){ lsSet(K_QUEUE, JSON.stringify(queue)); }
 function saveData(){ lsSet(K_DATA, JSON.stringify(data)); }
 
 /* ---------- API ---------- */
-var EXEC = 'https://script.google.com/macros/s/AKfycbwm134KlE_Knx4ZU2zqupMr-Of9K8bRiRbx_TD8KGB5gaXkG1Z4xfFXXVJMkgOz4u0C/exec';
+var EXEC = 'https://script.google.com/macros/s/AKfycbzQNCmuhBlu3bqUVtZ2Ae93JySZre0MfFngK0FwchLqlq5GQ_0FgkqhGDfxEjolhB9c/exec';
 function api(body, useToken){
   var a = body && body.action;
   var req = {}; for (var k in body) req[k] = body[k];
@@ -772,7 +772,7 @@ function tripAdvice(){
 function wxStamp(){
   if (!wx || !wx.updated) return "";
   var d = new Date(wx.updated);
-  return "Weather from the National Weather Service. Updated " + d.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}) + (navigator.onLine ? "." : ". You are offline. This is the last copy.");
+  return "Forecast from Open-Meteo, or the National Weather Service if it is down. Alerts from the National Weather Service. Updated " + d.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}) + (navigator.onLine ? "." : ". You are offline. This is the last copy.");
 }
 function wxNowHtml(ev){
   if (!ev) return "";
