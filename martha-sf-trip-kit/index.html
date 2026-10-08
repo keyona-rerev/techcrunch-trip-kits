@@ -1392,7 +1392,7 @@ var STAGES = [
   {e:"📝", d:"Oct 7-9",  t:"Prep",            end:"2026-10-10T00:00:00-05:00", tab:"pack", info:"Do the tasks in the Pack tab. Decide on the hotel by Oct 8 (free cancel until 11:59 PM PDT). Book rides."},
   {e:"🧳", d:"Oct 10",   t:"Pack + check in", end:"2026-10-11T02:00:00-04:00", tab:"pack", info:"Check in for United at 7:20 AM EDT. Pack the bags tonight. Charge all devices."},
   {e:"✈️", d:"Oct 11",   t:"Fly to SF",       end:"2026-10-12T00:00:00-07:00", tab:"plan", info:"United UA 369 DCA to SFO, 7:20 AM. Land 10:17 AM PDT. Westin St. Francis. Reception 6 PM at 461 Bryant St."},
-  {e:"🎤", d:"Oct 12",   t:"Badge + booth",   end:"2026-10-13T00:00:00-07:00", tab:"plan", info:"Pick up the badge (ID needed). Set up the booth at Moscone West. Leave the hall by 5 PM."},
+  {e:"🎤", d:"Oct 12",   t:"Rehearsal + badge + booth",   end:"2026-10-13T00:00:00-07:00", tab:"plan", info:"Top 20 technical rehearsal at Moscone West. Bring all demo gear. Pick up the badge (ID needed). Set up the booth. Leave the hall by 5 PM."},
   {e:"🚀", d:"Oct 13",   t:"Disrupt Day 1 + pitch", end:"2026-10-14T00:00:00-07:00", tab:"plan", info:"Show the badge QR. Check the pitch schedule. Pitch is 6 minutes with a live demo. Evening: Women in Tech(Crunch) Reception, 5 to 7 PM, Harborview Restaurant (offsite, hosted by Mastercard, RSVP needed). Check the venue address in your invite."},
   {e:"🌆", d:"Oct 14",   t:"Disrupt Day 2",   end:"2026-10-15T00:00:00-07:00", tab:"plan", info:"Check the TC Events app for side events and roundtables. Hall closes 5 PM."},
   {e:"🌙", d:"Oct 15",   t:"Day 3 + red-eye", end:"2026-10-16T00:00:00-07:00", tab:"plan", info:"Check out by 11 AM. Pack the booth by 3:30 PM. Reception 4:30 PM. Red-eye leaves SFO 11:36 PM."},
@@ -1607,7 +1607,8 @@ var OS_INFO = {
 };
 var OS_COM = {
   "2026-10-12":[
-    {id:"setup", t:"", kind:"Prismm", title:"Booth setup at Moscone West", note:"Set up day is 8 AM to 5 PM. Set the start time when you know it."}
+    {id:"reh", t:"08:00", kind:"Prismm", title:"Rehearsal", note:"Technical rehearsal for the Top 20. The email has no clock time. Read the time in the calendar invite from Isabelle Johannessen and set it here. 8:00 AM is a placeholder. Register and get your badge first. Then meet at the 3rd-floor escalators in Moscone West. Bring all laptops, cables, adapters, clickers and demo gear."},
+    {id:"setup", t:"", kind:"Prismm", title:"Booth setup at Moscone West", note:"Set up day is 8 AM to 5 PM. Set up the booth after rehearsal. Set the start time when you know it."}
   ],
   "2026-10-13":[
     {id:"pitch", t:"", mark:true, kind:"Prismm", title:"Prismm pitch: 6 minutes with a live demo", note:"The pitch time is not known yet. Set it here. Decide who runs the demo."}
@@ -1843,7 +1844,7 @@ function osConfHtml(day){
   var h = "";
   if (OS_INFO[day]) h += '<div class="card"><span class="tag">Hours</span><p class="small" style="margin:6px 0 0">' + esc(OS_INFO[day]) + '</p></div>';
   if (!all.length){
-    h += '<div class="card"><p class="small" style="margin:0">' + (day === "2026-10-12" ? "Disrupt sessions start on Oct 13. Booth setup is on the Prismm tab." : "The agenda for this day was not available. Open the official agenda.") + '</p>' +
+    h += '<div class="card"><p class="small" style="margin:0">' + (day === "2026-10-12" ? "Disrupt sessions start on Oct 13. Rehearsal and booth setup are on the Prismm tab." : "The agenda for this day was not available. Open the official agenda.") + '</p>' +
       '<div class="row"><a class="btn small ghost" href="' + OS_URL + '" target="_blank" rel="noopener">Open official agenda</a></div></div>';
     return h;
   }
