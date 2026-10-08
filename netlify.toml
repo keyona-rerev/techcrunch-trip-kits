@@ -1,0 +1,5 @@
+# No build step. This folder is the whole site.
+# Skip the deploy when nothing in this folder changed.
+[build]
+  publish = "."
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- ."
