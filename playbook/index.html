@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Disrupt Playbook</title>
+<style>
+:root{--bg:#faf8f5;--card:#fff;--ink:#1d1b20;--mute:#625d68;--line:#e4dfd8;--acc:#5b3fd1;--fix:#b3261e;--miss:#b45309;--conf:#1d5fb4;--ok:#1b7a43}
+@media (prefers-color-scheme:dark){:root{--bg:#141217;--card:#1e1b22;--ink:#f1eef4;--mute:#a9a3b1;--line:#34303a;--acc:#a78bfa;--fix:#ff8a80;--miss:#fbbf6a;--conf:#8ab4ff;--ok:#6ddc9a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:20px 16px 8px;max-width:980px;margin:0 auto}
+h1{font-size:1.5rem;margin:0 0 4px}
+.sub{color:var(--mute);font-size:.9rem;margin:0}
+nav{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);z-index:5}
+nav .in{max-width:980px;margin:0 auto;padding:8px 16px;display:flex;gap:8px;overflow-x:auto}
+nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:999px;font:inherit;font-size:.9rem;white-space:nowrap;cursor:pointer}
+nav button[aria-selected=true]{background:var(--acc);color:#fff;border-color:var(--acc)}
+main{max-width:980px;margin:0 auto;padding:16px}
+h2{font-size:1.2rem;margin:20px 0 8px}
+.note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0;font-size:.95rem}
+.prog{color:var(--mute);font-size:.85rem;margin:4px 0 12px}
+.row{display:grid;grid-template-columns:28px 1fr;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0}
+.row.done{opacity:.55}
+.row input{width:22px;height:22px;margin-top:2px}
+.top{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.tag{font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.t-FIX{color:var(--fix)}.t-MISSING{color:var(--miss)}.t-CONFIRM{color:var(--conf)}.t-OK{color:var(--ok)}
+.what{font-weight:600}
+.kv{display:grid;grid-template-columns:90px 1fr;gap:2px 10px;margin-top:6px;font-size:.92rem}
+.kv b{color:var(--mute);font-weight:600}
+.src{color:var(--mute);font-size:.8rem;margin-top:6px}
+a{color:var(--acc)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+td,th{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--mute);font-weight:600}
+.scroll{overflow-x:auto}
+@media print{nav{display:none}.panel{display:block!important;break-before:page}body{background:#fff;color:#000}}
+.panel{display:none}.panel.on{display:block}
+</style>
+</head>
+<body>
+<header>
+<h1>Disrupt 2026 playbook</h1>
+<p class="sub">Checked against the TechCrunch, Martha and Shella emails and the three trip apps. Snapshot: Thu Oct 8, 2026, midday Central. Tick a box when you have checked it. Ticks stay on this device.</p>
+</header>
+<nav><div class="in" id="tabs" role="tablist"></div></nav>
+<main id="main"></main>
+
+<script>
+var STATUS = {FIX:"Fix it", MISSING:"Missing", CONFIRM:"Confirm", OK:"Matches"};
+
+var DO_FIRST = [
+ {s:"FIX", what:"Westin St. Francis (Martha) free cancel ends tonight, 11:59 PM Pacific", email:"Reservation 72115142, Sun Oct 11 to Thu Oct 15. After tonight the cancel fee is $372.03. Total $2,208.06.", app:"Martha's app shows the stay and says free cancel until 11:59 PM PDT Oct 8.", act:"Decide with Martha today. 11:59 PM Pacific is 1:59 AM Central. Keep it or cancel.", src:"Martha's Westin forward, Oct 6"},
+ {s:"FIX", what:"One-time permission for the weather (three Apps Script projects)", email:"", app:"The weather cards are empty right now in all three apps. Google never got permission for the scripts to call weather sites.", act:"Open each project in Apps Script, pick authorizeWeather in the function list, press Run, press Allow. Do it for Shella, Martha and Trip Desk. See the Weather and maps tab.", src:"Live test, Oct 8"},
+ {s:"FIX", what:"Your Trip Desk shows Shella's flights, not yours", email:"Your Southwest C3LOZD: Oct 15 WN 3782 SFO 11:40 PM to MDW, then WN 4756 to BNA, then WN 225 to BHM, landing Fri Oct 16 1:20 PM.", app:"Trip Desk says Oct 14 fly to LA, sleep at Courtyard LAX, Oct 15 LAX to SFO, then ORD to DCA on Oct 16.", act:"Tell me and I will correct the Trip Desk stages. Its Google Sheet (flights, checklist, links, contacts) is also empty.", src:"Southwest C3LOZD email; Trip Desk code"},
+ {s:"CONFIRM", what:"Birmingham storm watch on departure morning", email:"Southwest's Oct 7 email carries a Severe Weather Travel Advisory banner.", app:"National Weather Service today: Tropical Storm Watch and Flood Watch for Birmingham, Flood Watch until Sun Oct 11 7:00 AM CDT. You and Shella leave BHM at 5:00 AM Oct 11.", act:"Check Southwest flight status on Sat evening and again at check-in (Sat Oct 10, 5:00 AM CDT).", src:"api.weather.gov, Oct 8"},
+ {s:"CONFIRM", what:"Rehearsal time, Mon Oct 12", email:"Isabelle's email says the time is in a calendar invite. The email has no clock time. I found no invite in either mailbox.", app:"Shella's and Trip Desk use 8:00 AM as a placeholder. Martha's app has no rehearsal row at all.", act:"Ask Isabelle Johannessen or check the Top 20 WhatsApp group. Then I can put the real time in all three.", src:"Top 20 Rehearsal Block 1, Sep 28"},
+ {s:"CONFIRM", what:"Pitch time and who runs the live demo", email:"Not in any email. Pitch is 6 minutes with a live demo.", app:"All three apps say 'confirm in pitch schedule'.", act:"Look in the TC Events app and ask Isabelle.", src:"3rd Pitch Meeting emails"},
+ {s:"MISSING", what:"Shella has no San Francisco hotel", email:"No booking in either mailbox for Shella's nights of Oct 11, 12 and 13, or the day of Oct 15.", app:"Shella's app says 'Hotel booking is not in the emails yet'.", act:"Book it or confirm where she stays.", src:"All Shella confirmations"},
+ {s:"CONFIRM", what:"Martha's United ticket name", email:"United and Expedia show the name as UNDERWOOD/MARTHASYLLA. American, Southwest and the Westin show Martha Underwood.", app:"Not mentioned.", act:"Check the name against her photo ID. Call United to fix it if it is wrong.", src:"United FT3N6B"},
+ {s:"MISSING", what:"The live demo environment is in none of the apps", email:"Martha forwarded the demo bank environment on Oct 5 (Tech Bridge Bank). Sign-in details are in that email.", app:"No link in any app.", act:"Add it to the demo_script link in each app. I left the password out of this page on purpose.", src:"Fwd: TechCrunch Bank Designate Environment"}
+];
+
+var KEYONA = [
+ {s:"FIX", what:"Return flights (Oct 15 to 16)", email:"Southwest C3LOZD. Thu Oct 15: WN 3782 SFO 11:40 PM to MDW 5:50 AM (seat 24A). Fri Oct 16: WN 4756 MDW 7:05 AM to BNA 8:30 AM (21F). WN 225 BNA 12:25 PM to BHM 1:20 PM (20A).", app:"Trip Desk shows LAX to SFO 7:17 AM, the red-eye to ORD, and ORD to DCA. Those are Shella's.", act:"Correct the Oct 14, 15 and 16 stages.", src:"Southwest C3LOZD"},
+ {s:"FIX", what:"Oct 14 'fly to LA, sleep at Courtyard LAX'", email:"You have no LA trip. You stay at the hostel Oct 13 and 14.", app:"Stage 6 says leave for SFO at 1:30 PM and sleep at Courtyard LAX.", act:"Remove it.", src:"Trip Desk code"},
+ {s:"OK", what:"Outbound flights Sun Oct 11", email:"WN 457 BHM 5:00 AM to DEN 7:00 AM (seat 25F). WN 4303 DEN 8:30 AM to SFO 10:15 AM (26F). Check in 24 hours before.", app:"Matches. Check-in Sat Oct 10, 5:00 AM CDT.", act:"Seats are not in the app. Add 25F and 26F.", src:"Southwest C3LOZD"},
+ {s:"OK", what:"Hostel, Oct 13 to 15", email:"Airbnb HMKPPFNTMY. Fun Social Hostel 1, 494 Broadway St, SF 94133. Check in after 4 PM Oct 13. Check out by 11 AM Oct 15. Free cancel before 4 PM Oct 12. Host phone +1 415-834-1000.", app:"Matches, including the map link.", act:"No door code is in any email. The host said they would send arrival details. Look for it.", src:"Airbnb confirmation and host messages"},
+ {s:"CONFIRM", what:"Oct 11 and 12 nights (friend's home, 814B Quarry Road)", email:"Not in any email. This comes from you.", app:"Trip Desk lists it with a map link and 'host will send entry details'.", act:"Confirm the address and entry steps with your friend.", src:"Trip Desk code"},
+ {s:"CONFIRM", what:"Oct 15, hostel check-out 11 AM, flight 11:40 PM", email:"About 12.7 hours with no room.", app:"Trip Desk says you believe the hostel holds your suitcase. 'Not checked yet.'", act:"Ask the host. Backup: Moscone coat check, first-floor lobby.", src:"Trip Desk code"},
+ {s:"CONFIRM", what:"Your TechCrunch ticket details", email:"Order 29816347, ticket type Team Member, Startup Battlefield, free. TechCrunch says registration is not complete until every ticketholder's details are filled in through 'Manage Registration Details' in the order email.", app:"Badge QR link is blank in Trip Desk.", act:"Open the order email and finish the details. Save the badge QR.", src:"Order Confirmation and Your Ticket Is Here, Oct 6"},
+ {s:"MISSING", what:"International Reception, Sun Oct 11, 6:00 to 9:00 PM", email:"Approved. 461 Bryant St. Registered under keyona@wunderwoodcorporation.com. https://luma.com/ki02vg09", app:"Not in Trip Desk.", act:"Add it. Same day you land at 10:15 AM.", src:"Luma approval, Oct 6"},
+ {s:"MISSING", what:"The Afterburn, Wed Oct 14, 6:00 to 8:00 PM", email:"Approved. Location shows as 'Fang', San Francisco. https://luma.com/n5rphnfy", app:"Not in Trip Desk.", act:"Add it, or skip it.", src:"Luma approval, Sep 24"},
+ {s:"CONFIRM", what:"SignalFire Disrupt Arthaus After-Party, Wed Oct 14, 7 to 11 PM Pacific", email:"Still 'pending approval'. I found no approval email.", app:"Not in Trip Desk.", act:"Check the Luma page.", src:"Luma pending, Sep 24"},
+ {s:"CONFIRM", what:"Women in Tech(Crunch), Tue Oct 13, 5 to 7 PM, Harborview Restaurant", email:"Hosted by Mastercard. No street address and no city in the email. The email has 'Reserve My Spot'.", app:"On the Oct 13 card and the schedule. Says 'check the venue address in your invite'.", act:"Click Reserve My Spot for each person. Then reply to Sabrina's job-5245db44 email with the address.", src:"TechCrunch invite, Oct 7"},
+ {s:"MISSING", what:"Links that are blank", email:"", app:"Trip Desk Links tab is empty: boarding pass, badge QR, TC Events app, Attendee Portal, WhatsApp, rehearsal invite, pitch schedule, booth map, deck, script.", act:"Tell me and I will fill the ones I have: TC app, Portal, WhatsApp, Luma pages, Maps.", src:"Trip Desk sheet"},
+ {s:"CONFIRM", what:"Contacts list", email:"Shella's app lists you as 'remote support'.", app:"You are on site.", act:"Change the role text in Shella's Contacts tab.", src:"Shella's sheet"}
+];
+
+var MARTHA = [
+ {s:"OK", what:"Flight in, Sun Oct 11", email:"United FT3N6B. UA 369 DCA 7:20 AM to SFO 10:17 AM. Seat 12F, Economy Plus. No bag prepaid.", app:"Matches.", act:"Check in 24 hours before (Sat Oct 10, 7:20 AM EDT).", src:"United eTicket"},
+ {s:"CONFIRM", what:"Ticket name on United", email:"UNDERWOOD/MARTHASYLLA. Other airlines say Martha Underwood.", app:"Not mentioned.", act:"Check against photo ID. Fix with United.", src:"United FT3N6B, Expedia 73545492824896"},
+ {s:"FIX", what:"Westin St. Francis cancel deadline", email:"72115142. Traditional Double, 335 Powell St. Check in 4 PM Oct 11. Check out 11 AM Oct 15. Free cancel before 11:59 PM PDT Oct 8. Phone +1 415-397-7000.", app:"Matches, with the deadline.", act:"Decide tonight.", src:"Westin confirmation"},
+ {s:"OK", what:"Red-eye home", email:"American YYRCUQ. Oct 15 AA 1954 SFO 11:36 PM to ORD 5:59 AM (12F). Oct 16 AA 2997 ORD 6:59 AM to DCA 10:06 AM (9F). No bag prepaid ($45 online).", app:"Matches.", act:"Check in 24 hours before. Shella is on the same two flights, seated apart.", src:"American YYRCUQ"},
+ {s:"MISSING", what:"Rehearsal, Mon Oct 12", email:"Isabelle: everyone on stage must attend, including the demo operator. Meet at the 3rd floor escalators of Moscone West. Bring all demo gear.", app:"Martha's app has booth setup on Oct 12 and no rehearsal row. Shella's and Trip Desk have one.", act:"Add the rehearsal to Martha's app once the time is known.", src:"Top 20 Rehearsal Block 1"},
+ {s:"OK", what:"Booth setup and expo hours", email:"Not in any email I could read. The app took them from the TechCrunch portal: setup Mon 8 AM to 5 PM, hall closes 5 PM, pack from 3 PM on Oct 15.", app:"Matches the portal text in the app.", act:"Re-check the Attendee Portal page once.", src:"Attendee Portal (in app)"},
+ {s:"CONFIRM", what:"Startup Battlefield 200 Reception, Thu Oct 15, 4:30 to 6:30 PM", email:"No email found. The app says 'TechCrunch sends the RSVP one week before'. That was Oct 8.", app:"On the Oct 15 stage and in the Expo tab.", act:"Look for the RSVP email in Martha's inbox. Confirm your team is invited.", src:"Attendee Portal (in app)"},
+ {s:"MISSING", what:"Luma links are blank", email:"Embassy https://luma.com/ki02vg09. Afterburn https://luma.com/n5rphnfy. SignalFire Arthaus https://luma.com/signalfire-arthaus.", app:"Martha's Links tab has the Luma rows empty. Shella's has the URLs.", act:"I can paste these into Martha's sheet.", src:"Side Events thread, Sep 24"},
+ {s:"OK", what:"International Reception, Sun Oct 11, 6 to 9 PM, 461 Bryant St", email:"Approved for Keyona. Xina said she is already registered. Martha's own approval was not found.", app:"On the Oct 11 stage.", act:"Confirm Martha has her ticket.", src:"Luma, Oct 6"},
+ {s:"CONFIRM", what:"Women in Tech(Crunch), Tue Oct 13, 5 to 7 PM", email:"No address in the invite. Martha told you to add it. Invite went to Shella.", app:"On the Oct 13 card.", act:"Reserve a spot. Add the address.", src:"TechCrunch invite"},
+ {s:"OK", what:"Later Birmingham trips not on this itinerary", email:"Southwest AZIY4N DCA to BHM Oct 25. American UDBTCX BHM to DCA Oct 30.", app:"Correctly not in the app.", act:"None.", src:"Martha's forwards, Oct 6"}
+];
+
+var SHELLA = [
+ {s:"OK", what:"Flights in, Sun Oct 11", email:"Southwest CJHRMP. WN 457 BHM 5:00 AM to DEN 7:00 AM (seat 07A). WN 4303 DEN 8:30 AM to SFO 10:15 AM (07F). No bag bought ($45 first bag).", app:"Matches. The app says 'seat group A07'.", act:"Put seat 07A and 07F in the app.", src:"Southwest CJHRMP"},
+ {s:"MISSING", what:"San Francisco hotel", email:"None found.", app:"'Hotel booking is not in the emails yet.'", act:"Book or confirm.", src:"All mailboxes"},
+ {s:"OK", what:"LA side trip", email:"American KVPPVI. Wed Oct 14 AA 6276 SFO 4:07 PM to LAX 5:44 PM. Thu Oct 15 AA 6274 LAX 7:17 AM to SFO 8:57 AM. Seats not set. No bag prepaid.", app:"Matches.", act:"Pick seats. Check in 24 hours before.", src:"American KVPPVI"},
+ {s:"OK", what:"Courtyard LAX", email:"2HXSP05P4L. 6161 W Century Blvd. Check in 4 PM Oct 14. Out 11 AM Oct 15. Phone +1 310-649-1400. Parking $58 a day.", app:"Matches.", act:"Free cancel ends 5:59 PM hotel time Mon Oct 12. The app does not say so.", src:"Courtyard confirmation"},
+ {s:"OK", what:"Red-eye home", email:"American QOFOMN. Oct 15 AA 1954 SFO 11:36 PM to ORD 5:59 AM (18B). Oct 16 AA 2997 ORD 6:59 AM to DCA 10:06 AM (13A). One checked bag prepaid.", app:"Matches.", act:"None.", src:"American QOFOMN"},
+ {s:"CONFIRM", what:"Missing Oct 14 evening events", email:"She is in LA from 5:44 PM. The Afterburn (6 PM) and Arthaus (7 PM) are in San Francisco.", app:"Not in her app.", act:"Skip them for Shella.", src:"Luma, American KVPPVI"},
+ {s:"MISSING", what:"International Reception, Sun Oct 11", email:"Shella replied 'Done' to the three Luma links on Sep 24. I found no approval email for her.", app:"Not in Shella's app.", act:"Check her Luma tickets. Add the event.", src:"Side Events thread"},
+ {s:"CONFIRM", what:"Women in Tech(Crunch)", email:"The invite was sent to Shella. She asked 'Are we going?'", app:"On the Oct 13 card and schedule.", act:"Reserve her spot.", src:"TechCrunch invite"},
+ {s:"CONFIRM", what:"Contacts tab", email:"", app:"Lists you as 'remote support'. Xina is listed as 'Team'.", act:"Fix your role text.", src:"Shella's sheet"},
+ {s:"OK", what:"Links already filled", email:"", app:"TC app, Attendee Portal, WhatsApp, three Luma links (side events 1 to 3), two Maps links.", act:"Luma rows are named 'Side event 1, 2, 3'. Rename: n5rphnfy is the Afterburn, ki02vg09 is the Embassy.", src:"Shella's sheet"}
+];
+
+var WX = {
+ fixed:[
+  "The weather was empty in all three apps. Cause: Google never gave the scripts permission to call websites (the permission was listed but never approved). That needs your one click on each project.",
+  "Added a backup forecast from the National Weather Service. If Open-Meteo fails or is slow, the apps use it for about 7 days ahead.",
+  "Alerts were always empty. They now come from the National Weather Service for each city.",
+  "The page said 'National Weather Service' while using Open-Meteo. The label now tells the truth.",
+  "San Francisco's weather point moved from city center to Moscone West.",
+  "A failed forecast is no longer saved for 20 minutes. Walk and ride times are saved for 6 hours.",
+  "Each app now points at its new version. The change is pushed to GitHub. Netlify redeploys on its own."
+ ],
+ maps:[
+  "Map links use the current Google Maps link format. Addresses checked against the emails: Moscone West 800 Howard St, Westin 335 Powell St, Courtyard LAX 6161 W Century Blvd, hostel 494 Broadway St, Embassy 461 Bryant St.",
+  "Live test of walk times: Westin to Moscone West is 12 minutes and 0.6 miles."
+ ],
+ alerts:[["San Francisco","Coastal Flood Advisory until Tue Oct 13, 3:00 PM"],["Los Angeles","Extreme Heat Warning (today only). Coastal Flood Advisory until Oct 13."],["Birmingham","Tropical Storm Watch. Flood Watch until Sun Oct 11, 7:00 AM CDT. Tropical Cyclone statements."]],
+ fc:[["San Francisco","Oct 11","63 / 54","2%","Cloudy"],["San Francisco","Oct 12","70 / 57","17%","Cloudy"],["San Francisco","Oct 13","65 / 56","1%","Cloudy"],["San Francisco","Oct 14","66 / 57","1%","Cloudy"],["San Francisco","Oct 15","74 / 58","1%","Clear, wind 23 mph"],["Los Angeles","Oct 14","74 / 66","3%","Cloudy"],["Los Angeles","Oct 15","75 / 68","4%","Mostly sunny"]]
+};
+
+var SOURCES = [
+ "TechCrunch Events: Order Confirmation and Your Ticket Is Here (Oct 6); prep checklist (Oct 6); Women in Tech(Crunch) invite (Oct 7); AI and space email (Oct 8)",
+ "Isabelle Johannessen: Top 20 Rehearsal Block 1 (Sep 28); 3rd Pitch Meeting (Sep 21, Sep 30); The Final Countdown (Oct 2)",
+ "Luma: Embassy approved (Oct 6); Afterburn approved (Sep 24); SignalFire Arthaus pending (Sep 24)",
+ "Martha's forwards (Oct 6): Westin 72115142, United FT3N6B, Expedia, American YYRCUQ, Southwest AZIY4N, American UDBTCX",
+ "Shella's forwards (Oct 6): Southwest CJHRMP, American QOFOMN, American KVPPVI, Courtyard 2HXSP05P4L",
+ "Your own: Southwest C3LOZD, Airbnb HMKPPFNTMY and host messages, Disrupt logistics agenda (Oct 7)",
+ "Not found in either mailbox: rehearsal clock time, pitch time, booth number, Harborview address, Startup Battlefield 200 Reception RSVP, hostel door instructions, any Shella hotel in San Francisco",
+ "Apps read: the three index.html files in GitHub, and the three Google Sheets. Weather and routes tested live against each script and the National Weather Service."
+];
+
+var TABS = [["first","Do first"],["keyona","Keyona"],["martha","Martha"],["shella","Shella"],["wx","Weather and maps"],["src","Sources"]];
+var store = {}; try { store = JSON.parse(localStorage.getItem("pb_ticks") || "{}"); } catch(e){ store = {}; }
+function save(){ try { localStorage.setItem("pb_ticks", JSON.stringify(store)); } catch(e){} }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function link(s){ return esc(s).replace(/(https?:\/\/[^\s)]+)/g, function(u){ return '<a href="'+u+'" target="_blank" rel="noopener">'+u+'</a>'; }); }
+
+function rows(key, list){
+  var done = list.filter(function(r,i){ return store[key+i]; }).length;
+  var h = '<p class="prog" id="prog-'+key+'">'+done+' of '+list.length+' checked</p>';
+  list.forEach(function(r,i){
+    var id = key+i, on = !!store[id];
+    h += '<div class="row'+(on?' done':'')+'"><input type="checkbox" data-id="'+id+'" data-key="'+key+'" aria-label="Checked"'+(on?' checked':'')+'><div>' +
+      '<div class="top"><span class="tag t-'+r.s+'">'+STATUS[r.s]+'</span><span class="what">'+esc(r.what)+'</span></div>' +
+      '<div class="kv">' + (r.email?'<b>Email says</b><span>'+link(r.email)+'</span>':'') + (r.app?'<b>App says</b><span>'+link(r.app)+'</span>':'') + (r.act?'<b>Do</b><span>'+link(r.act)+'</span>':'') + '</div>' +
+      (r.src?'<div class="src">Source: '+esc(r.src)+'</div>':'') + '</div></div>';
+  });
+  return h;
+}
+
+var PANELS = {
+ first: function(){ return '<div class="note">Eight things to settle first. The first one has a deadline tonight.</div>' + rows("first", DO_FIRST); },
+ keyona: function(){ return '<div class="note">Your Trip Desk. Flights: Southwest C3LOZD. Stay: friend\'s home Oct 11 and 12, then the hostel.</div>' + rows("keyona", KEYONA); },
+ martha: function(){ return '<div class="note">Martha\'s kit. Flights: United FT3N6B in, American YYRCUQ out. Hotel: Westin St. Francis.</div>' + rows("martha", MARTHA); },
+ shella: function(){ return '<div class="note">Shella\'s kit. Flights: Southwest CJHRMP in, American KVPPVI to LA and back, American QOFOMN out. Hotels: Courtyard LAX only.</div>' + rows("shella", SHELLA); },
+ wx: function(){
+  var h = '<h2>One-time step (about one minute per app)</h2><div class="note"><ol style="margin:0;padding-left:20px"><li>Open the Apps Script project (links below).</li><li>In the toolbar, pick <b>authorizeWeather</b> in the function list.</li><li>Press <b>Run</b>. Press <b>Review permissions</b>, choose your account, press <b>Allow</b>.</li><li>The log should list five cities with a source (open-meteo or nws) and a day count.</li></ol>' +
+   '<p style="margin:10px 0 0">Projects: <a href="https://script.google.com/home/projects/1Ns1CaZEEVuJgtssgiwu-BKBEoK9sMlJ6OqlpmmWD1X9COnw-RlbS_ybm/edit" target="_blank" rel="noopener">Shella</a> &middot; <a href="https://script.google.com/home/projects/1E4mo6e_0wZNXrA8_TMcgldrRjGpqgMYiFFZiSppHbg5xFrsFIFj8vbFC/edit" target="_blank" rel="noopener">Martha</a> &middot; <a href="https://script.google.com/home/projects/1a7ayKf4_EUlMdlYnPSzlpU7qmz2XSjwxhe6L11nVupjnBelXP64uzFuB/edit" target="_blank" rel="noopener">Trip Desk</a></p></div>';
+  h += '<h2>What I found and changed</h2><div class="note"><ul style="margin:0;padding-left:20px">' + WX.fixed.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("") + '</ul></div>';
+  h += '<h2>Maps</h2><div class="note"><ul style="margin:0;padding-left:20px">' + WX.maps.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("") + '</ul></div>';
+  h += '<h2>Active alerts today (National Weather Service)</h2><div class="scroll"><table><tr><th>City</th><th>Alert</th></tr>' + WX.alerts.map(function(a){ return '<tr><td>'+esc(a[0])+'</td><td>'+esc(a[1])+'</td></tr>'; }).join("") + '</table></div>';
+  h += '<h2>Forecast snapshot (high / low F)</h2><div class="scroll"><table><tr><th>City</th><th>Day</th><th>Hi / Lo</th><th>Rain</th><th>Sky</th></tr>' + WX.fc.map(function(a){ return '<tr><td>'+esc(a[0])+'</td><td>'+esc(a[1])+'</td><td>'+esc(a[2])+'</td><td>'+esc(a[3])+'</td><td>'+esc(a[4])+'</td></tr>'; }).join("") + '</table></div>';
+  h += '<p class="prog">Snapshot taken Oct 8. Forecasts change. The apps show the live numbers once the permission step is done.</p>';
+  return h; },
+ src: function(){ return '<h2>Where each fact came from</h2><div class="note"><ul style="margin:0;padding-left:20px">' + SOURCES.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("") + '</ul></div><div class="note">Left out on purpose: card digits, loyalty numbers, ticket numbers, and the demo password.</div>'; }
+};
+
+var cur = "first";
+function show(k){
+  cur = k;
+  document.getElementById("main").innerHTML = PANELS[k]();
+  Array.prototype.forEach.call(document.querySelectorAll("#tabs button"), function(b){ b.setAttribute("aria-selected", b.dataset.k === k ? "true" : "false"); });
+  try { history.replaceState(null, "", "#" + k); } catch(e){}
+  window.scrollTo(0, 0);
+}
+document.getElementById("tabs").innerHTML = TABS.map(function(t){ return '<button role="tab" data-k="'+t[0]+'">'+t[1]+'</button>'; }).join("");
+document.getElementById("tabs").addEventListener("click", function(e){ var b = e.target.closest("button"); if (b) show(b.dataset.k); });
+document.getElementById("main").addEventListener("change", function(e){
+  var c = e.target; if (!c.dataset.id) return;
+  if (c.checked) store[c.dataset.id] = 1; else delete store[c.dataset.id];
+  save();
+  c.closest(".row").classList.toggle("done", c.checked);
+  var key = c.dataset.key, n = document.querySelectorAll('input[data-key="'+key+'"]:checked').length, tot = document.querySelectorAll('input[data-key="'+key+'"]').length;
+  var p = document.getElementById("prog-"+key); if (p) p.textContent = n + " of " + tot + " checked";
+});
+var h0 = (location.hash || "").slice(1); show(PANELS[h0] ? h0 : "first");
+</script>
+</body>
+</html>
