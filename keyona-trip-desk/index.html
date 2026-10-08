@@ -674,23 +674,46 @@ function dueMs(it){ var m = Date.parse(it.due_iso); return isNaN(m) ? 9e15 : m; 
 
 /* ---------- decisions ---------- */
 var DECISIONS = [
-  {id:"bhm_ride", ev:"t01", due:"Fri Oct 9", q:"How will you get to the Birmingham airport (BHM) at 3:30 AM on Sun Oct 11?", opts:[
-    {v:"park", l:"I drive and park", f:[
-      {k:"prepaid", t:"check", l:"I prepaid the parking"},
-      {k:"prepay_link", t:"url", l:"Prepay receipt or link (paste here)"},
-      {k:"pass", t:"text", l:"Parking pass or confirmation code (add now or on the day)"},
-      {k:"spot", t:"text", l:"Where I parked (lot, level, row)"}]},
+  {id:"bhm_ride", ev:"t09", due:"Fri Oct 9", q:"How will you get to the Birmingham airport (BHM) by 3:45 AM on Sun Oct 11?", opts:[
     {v:"ride", l:"Uber or Lyft", f:[
       {k:"ride_link", t:"url", l:"Ride booking (paste link here)"},
-      {k:"ride_time", t:"text", l:"Pickup time (suggest 3:00 AM)"}]},
+      {k:"ride_time", t:"text", l:"Pickup time (suggest 3:15 AM, so you arrive by 3:45 AM)"}]},
     {v:"drop", l:"A person drives me", f:[
       {k:"who", t:"text", l:"Who drives me? Add the phone number."}]}]},
-  {id:"sfo_ride", ev:"t04", due:"Fri Oct 9", q:"How will you get from SFO to the hotel on Sun Oct 11 (you land 10:15 AM)?", opts:[
+  {id:"sfo_ride", ev:"t10", due:"Fri Oct 9", q:"How will you get from SFO to your friend's place in Palo Alto on Sun Oct 11 (you land 10:15 AM)?", opts:[
     {v:"ride", l:"Uber or Lyft", f:[
       {k:"ride_link", t:"url", l:"Ride booking (paste link here)"}]},
+    {v:"transit", l:"Caltrain, BART, or taxi", f:[
+      {k:"plan", t:"text", l:"My plan (station, line, cost)"}]},
+    {v:"drop", l:"My friend picks me up", f:[
+      {k:"who", t:"text", l:"Pickup spot and time"}]}]},
+  {id:"friend_ride", ev:"t11", due:"Fri Oct 9", q:"How will you get from your friend's place in Palo Alto to San Francisco on Tue Oct 13?", opts:[
+    {v:"ride", l:"Uber or Lyft", f:[
+      {k:"ride_link", t:"url", l:"Ride booking (paste link here)"},
+      {k:"ride_time", t:"text", l:"Pickup time"}]},
+    {v:"transit", l:"Caltrain or BART", f:[
+      {k:"plan", t:"text", l:"My plan (station, line, time, cost)"}]},
+    {v:"drop", l:"My friend drives me", f:[
+      {k:"who", t:"text", l:"Pickup time"}]}]},
+  {id:"bag_plan", ev:"t05", due:"Wed Oct 14", q:"Where will your bags go after you check out at 11:00 AM on Thu Oct 15 (your flight leaves at 11:40 PM)?", opts:[
+    {v:"hostel", l:"The hostel holds them", f:[
+      {k:"note", t:"text", l:"Who I asked and where they are kept"}]},
+    {v:"locker", l:"A luggage locker", f:[
+      {k:"where", t:"text", l:"Address and cost"}]},
+    {v:"carry", l:"I carry them"}]},
+  {id:"sfo_out_ride", ev:"t12", due:"Wed Oct 14", q:"How will you get from San Francisco to the SFO airport on Thu Oct 15 (your flight leaves at 11:40 PM)?", opts:[
+    {v:"ride", l:"Uber or Lyft", f:[
+      {k:"ride_link", t:"url", l:"Ride booking (paste link here)"},
+      {k:"ride_time", t:"text", l:"Pickup time (suggest 8:30 PM, so you arrive by 9:40 PM)"}]},
     {v:"transit", l:"BART or taxi", f:[
-      {k:"plan", t:"text", l:"My plan (station, line, cost)"}]}]},
-  {id:"demo_op", ev:"t06", due:"Fri Oct 9", q:"Who runs the live demo on stage?", opts:[
+      {k:"plan", t:"text", l:"My plan (station, line, time, cost)"}]}]},
+  {id:"bhm_home", ev:"t13", due:"Wed Oct 14", q:"How will you get home from the Birmingham airport on Fri Oct 16 (you land 1:20 PM)?", opts:[
+    {v:"ride", l:"Uber or Lyft", f:[
+      {k:"ride_link", t:"url", l:"Ride booking (paste link here)"},
+      {k:"ride_time", t:"text", l:"Pickup time"}]},
+    {v:"drop", l:"A person picks me up", f:[
+      {k:"who", t:"text", l:"Who picks me up? Add the phone number."}]}]},
+  {id:"demo_op", ev:"t_pitch", due:"Fri Oct 9", q:"Who runs the live demo on stage?", opts:[
     {v:"me", l:"I do"},
     {v:"other", l:"Someone else", f:[
       {k:"name", t:"text", l:"Name and phone. This person must go to rehearsal on Mon Oct 12."}]}]}
