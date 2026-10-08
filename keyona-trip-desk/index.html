@@ -713,7 +713,31 @@ var DECISIONS = [
       {k:"ride_time", t:"text", l:"Pickup time"}]},
     {v:"drop", l:"A person picks me up", f:[
       {k:"who", t:"text", l:"Who picks me up? Add the phone number."}]}]},
-  {id:"demo_op", ev:"t_pitch", due:"Fri Oct 9", q:"Who runs the live demo on stage?", opts:[
+  {id:"booth_sched", ev:"t15", due:"Fri Oct 9", q:"Have you and Martha set your booth shifts for Oct 13 to 15?", opts:[
+    {v:"set", l:"Yes, shifts are set", f:[
+      {k:"plan", t:"text", l:"Shift plan (who, which hours, each day)"}]},
+    {v:"notyet", l:"Not yet"}]},
+  {id:"commute_12", ev:"t14", due:"Fri Oct 9", q:"How will you get from Palo Alto to Moscone West on Mon Oct 12 (set up starts 8:00 AM)?", opts:[
+    {v:"ride", l:"Uber or Lyft", f:[
+      {k:"ride_link", t:"url", l:"Ride booking (paste link here)"},
+      {k:"ride_time", t:"text", l:"Pickup time"}]},
+    {v:"transit", l:"Caltrain, then Muni or a ride", f:[
+      {k:"plan", t:"text", l:"My plan (station, line, time, cost)"}]},
+    {v:"drop", l:"My friend drives me", f:[
+      {k:"who", t:"text", l:"Pickup time"}]}]},
+  {id:"commute_14", ev:"t18", due:"Tue Oct 13", q:"How will you get from the hostel to Moscone West on Wed Oct 14?", opts:[
+    {v:"walk", l:"I walk"},
+    {v:"ride", l:"Uber or Lyft", f:[
+      {k:"ride_link", t:"url", l:"Ride booking (paste link here)"}]},
+    {v:"transit", l:"Muni or BART", f:[
+      {k:"plan", t:"text", l:"My plan (line, time, cost)"}]}]},
+  {id:"commute_15", ev:"t20", due:"Wed Oct 14", q:"How will you get from the hostel to Moscone West on Thu Oct 15?", opts:[
+    {v:"walk", l:"I walk"},
+    {v:"ride", l:"Uber or Lyft", f:[
+      {k:"ride_link", t:"url", l:"Ride booking (paste link here)"}]},
+    {v:"transit", l:"Muni or BART", f:[
+      {k:"plan", t:"text", l:"My plan (line, time, cost)"}]}]},
+  {id:"demo_op", ev:"t17", due:"Fri Oct 9", q:"Who runs the live demo on stage?", opts:[
     {v:"me", l:"I do"},
     {v:"other", l:"Someone else", f:[
       {k:"name", t:"text", l:"Name and phone. This person must go to rehearsal on Mon Oct 12."}]}]}
