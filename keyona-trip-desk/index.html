@@ -1596,7 +1596,7 @@ function renderNow(){
 function renderPlan(){
   var el = $("p-plan"); var evs = sortedEvents();
   if (!evs.length){ el.innerHTML = '<div class="card empty">No plan yet.</div>'; return; }
-  var h = "", last = "";
+  var h = '<div class="card"><h3>Techbridge staging</h3><p><a href="https://techbridge.staging.my-designate.com/session/new" target="_blank" rel="noopener">techbridge.staging.my-designate.com/session/new</a></p><p>Login (staff): avery.stone@techbridge.example</p><p>Password: password123</p></div>', last = "";
   evs.forEach(function(ev){
     var ds = localDate(ev);
     if (ds !== last){ h += (last ? '</div>' : '') + '<div class="dayg" data-ds="' + ds + '"><h2 class="day">' + esc(dayLabel(ds)) + wxChip(ds) + '</h2>'; last = ds; }
