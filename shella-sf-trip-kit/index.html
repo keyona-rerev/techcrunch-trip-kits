@@ -1515,7 +1515,7 @@ function renderNow(){
 function renderPlan(){
   var el = $("p-plan"); var evs = sortedEvents();
   if (!evs.length){ el.innerHTML = '<div class="card empty">No plan yet.</div>'; return; }
-  var h = '<div class="card"><h3>Techbridge staging</h3><p><a href="https://techbridge.staging.my-designate.com/session/new" target="_blank" rel="noopener">techbridge.staging.my-designate.com/session/new</a></p><p>Login (staff): avery.stone@techbridge.example</p><p>Password: password123</p></div>', last = "";
+  var h = "", last = "";
   evs.forEach(function(ev){
     var ds = localDate(ev);
     if (ds !== last){ h += (last ? '</div>' : '') + '<div class="dayg" data-ds="' + ds + '"><h2 class="day">' + esc(dayLabel(ds)) + wxChip(ds) + '</h2>'; last = ds; }
@@ -1871,11 +1871,16 @@ function osConfHtml(day){
   h += '<div class="card"><p class="small" style="margin:0">Copied from the TechCrunch agenda on Oct 7, 2026. Times can change. Check the official agenda on the day.</p><div class="row"><a class="btn small ghost" href="' + OS_URL + '" target="_blank" rel="noopener">Open official agenda</a></div></div>';
   return h;
 }
+function stgHtml(){
+  var open = lsGet(VP + "os_stg") === "1";
+  return '<div class="card"><div class="row" style="justify-content:space-between;align-items:center"><h3 style="margin:0">Techbridge staging</h3><button class="btn small ghost" data-osstg="1" aria-expanded="' + open + '">' + (open ? "Close" : "Open") + '</button></div>' +
+    (open ? '<p><a href="https://techbridge.staging.my-designate.com/session/new" target="_blank" rel="noopener">techbridge.staging.my-designate.com/session/new</a></p><p>Login (staff): avery.stone@techbridge.example</p><p>Password: password123</p>' : '') + '</div>';
+}
 function renderOnsite(){
   var el = $("p-onsite"); if (!el) return;
   var sub = lsGet(VP + "os_sub") || "p", day = lsGet(VP + "os_day") || osDefaultDay();
   var g = osGaps();
-  var h = '<div class="os-ban ' + (g.gaps ? "bad" : "good") + '">' + (g.total ? (g.gaps ? 'Booth gaps: ' + g.gaps + ' of ' + g.total + ' hours have nobody assigned (Oct 13 to 15).' : 'Every booth hour is covered (Oct 13 to 15).') : 'No booth hours set.') + '</div>' +
+  var h = stgHtml() + '<div class="os-ban ' + (g.gaps ? "bad" : "good") + '">' + (g.total ? (g.gaps ? 'Booth gaps: ' + g.gaps + ' of ' + g.total + ' hours have nobody assigned (Oct 13 to 15).' : 'Every booth hour is covered (Oct 13 to 15).') : 'No booth hours set.') + '</div>' +
     '<div class="os-seg"><button data-ossub="p" aria-pressed="' + (sub === "p") + '">Prismm</button><button data-ossub="c" aria-pressed="' + (sub === "c") + '">Conference</button><button data-ossub="x" aria-pressed="' + (sub === "x") + '">Expo</button></div>' +
     (sub === "x" ? "" : '<div class="os-days">' + OS_DAYS.map(function(d){ return '<button data-osday="' + d[0] + '" aria-pressed="' + (day === d[0]) + '">' + d[1] + '<b>' + d[2] + '</b></button>'; }).join("") + '</div>') +
     (sub === "p" ? osPrismmHtml(day) : sub === "x" ? osExpoHtml() : osConfHtml(day));
@@ -1885,6 +1890,7 @@ function renderOnsite(){
 document.addEventListener("click", function(e){
   var b, el = $("p-onsite");
   if (!el || !el.contains(e.target)) return;
+  if ((b = e.target.closest("[data-osstg]"))){ lsSet(VP + "os_stg", lsGet(VP + "os_stg") === "1" ? "0" : "1"); renderOnsite(); return; }
   if ((b = e.target.closest("[data-ossub]"))){ lsSet(VP + "os_sub", b.getAttribute("data-ossub")); renderOnsite(); return; }
   if ((b = e.target.closest("[data-osday]"))){ lsSet(VP + "os_day", b.getAttribute("data-osday")); renderOnsite(); return; }
   if ((b = e.target.closest("[data-osf]"))){ lsSet(VP + "os_f", b.getAttribute("data-osf")); renderOnsite(); return; }
